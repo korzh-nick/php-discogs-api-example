@@ -8,6 +8,8 @@ require '../vendor/autoload.php';
 use OAuth\OAuth1\Service\BitBucket;
 use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 ini_set('date.timezone', 'Europe/Amsterdam');
 
@@ -56,14 +58,18 @@ if (! $isAuthorized) {
     header('Location: ' . $url);
 }
 
-$client = Discogs\ClientFactory::factory([]);
-$oauth = new GuzzleHttp\Subscriber\Oauth\Oauth1([
-    'consumer_key'    => $consumerKey, // from Discogs developer page
-    'consumer_secret' => $consumerSecret, // from Discogs developer page
-    'token'           => $token->getRequestToken(), // get this using a OAuth library
-    'token_secret'    => $token->getRequestTokenSecret() // get this using a OAuth library
+$stack = HandlerStack::create();
+$middleware = new Oauth1([
+        'consumer_key'    => $consumerKey, // from Discogs developer page
+        'consumer_secret' => $consumerSecret, // from Discogs developer page
+        'token'           => $token->getRequestToken(), // get this using a OAuth library
+        'token_secret'    => $token->getRequestTokenSecret() // get this using a OAuth library
+    ]);
+$stack->push($middleware);
+$client = Discogs\ClientFactory::factory([
+  'handler' => $stack,
+  'auth' => 'oauth'
 ]);
-$client->getHttpClient()->getEmitter()->attach($oauth);
 
 $response = $client->search([
     'q' => 'searchstring'

@@ -1,9 +1,40 @@
 {
-    "autoload": {
-        "psr-0": { "": "src/" }
-    },
-    "require": {
-      "lusitanian/oauth": "~0.3",
-        "ricbra/php-discogs-api": "~1.1"
+  "name": "korzh-nick/php-discogs-api-example",
+  "description": "php-discogs-api-example",
+  "type": "library",
+  "license": "GPL-2.0+",
+  "minimum-stability": "dev",
+  "config": {
+    "secure-http": false
+  },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "korzh-nick/php-discogs-api",
+        "version": "master",
+        "dist": {
+          "url": "https://github.com/korzh-nick/php-discogs-api-example/archive/master.zip",
+          "type": "zip"
+        },
+        "autoload": {
+          "psr-0": {
+            "Discogs\\": "lib/"
+          }
+        }
+      }
     }
+  ],
+  "autoload": {
+    "psr-0": {
+      "": "src/"
+    }
+  },
+  "require": {
+    "lusitanian/oauth": "~0.3",
+    "korzh-nick/php-discogs-api": "master",
+    "guzzlehttp/guzzle": "^6.0",
+    "guzzlehttp/guzzle-services": "^1.1.3",
+    "guzzlehttp/oauth-subscriber": "^0.3.0"
+  }
 }
